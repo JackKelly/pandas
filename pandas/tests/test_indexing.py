@@ -1019,6 +1019,22 @@ class TestIndexing(tm.TestCase):
         expected = pd.Series([0, 5], index=index)
         assert_series_equal(result, expected)
 
+    def test_indexing_when_data_is_datetimeindex_tz(self):
+
+        # GH 12089
+        # Indexing into Series of tz-aware datetime64s
+        dates = pd.date_range('2015-01-01', periods=3, tz='utc')
+        index = ['a', 'b', 'c']
+
+        ser = pd.Series(dates, index=index)
+
+        for sel, date in zip(index, dates):
+            # getitem
+            self.assertEqual(ser[sel], date)
+
+            # .loc getitem
+            self.assertEqual(ser.loc[sel], date)
+
     def test_loc_setitem_dups(self):
 
         # GH 6541

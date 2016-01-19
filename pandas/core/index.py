@@ -1854,7 +1854,10 @@ class Index(IndexOpsMixin, StringAccessorMixin, PandasObject):
         # use this, e.g. DatetimeIndex
         s = getattr(series,'_values',None)
         if isinstance(s, Index) and lib.isscalar(key):
-            return s[key]
+            try:
+                return s[key]
+            except IndexError:
+                pass
 
         s = _values_from_object(series)
         k = _values_from_object(key)
