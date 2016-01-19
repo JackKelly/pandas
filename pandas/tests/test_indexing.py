@@ -1023,17 +1023,32 @@ class TestIndexing(tm.TestCase):
 
         # GH 12089
         # Indexing into Series of tz-aware datetime64s
-        dates = pd.date_range('2015-01-01', periods=3, tz='utc')
+        dates = pd.date_range('2015-01-01', periods=3, tz='US/Eastern')
         index = ['a', 'b', 'c']
 
-        ser = pd.Series(dates, index=index)
+        series = pd.Series(dates, index=index)
 
         for sel, date in zip(index, dates):
             # getitem
-            self.assertEqual(ser[sel], date)
+            self.assertEqual(series[sel], date)
 
             # .loc getitem
-            self.assertEqual(ser.loc[sel], date)
+            self.assertEqual(series.loc[sel], date)
+
+        # Number indexes:
+        for i in range(3):
+            self.assertEqual(series[i], dates[i])
+            self.assertEqual(series.iloc[i], dates[i])
+
+        # Out of bounds:
+        with self.assertRaises(KeyError):
+            series['d']
+
+        with self.assertRaises(IndexError):
+            series[3]
+
+        with self.assertRaises(IndexError):
+            series.iloc[3]
 
     def test_loc_setitem_dups(self):
 

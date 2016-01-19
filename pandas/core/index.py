@@ -1852,6 +1852,7 @@ class Index(IndexOpsMixin, StringAccessorMixin, PandasObject):
 
         # if we have something that is Index-like, then
         # use this, e.g. DatetimeIndex
+
         s = getattr(series,'_values',None)
         if isinstance(s, Index) and lib.isscalar(key):
             try:
